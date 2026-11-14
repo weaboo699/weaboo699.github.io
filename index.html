@@ -7,141 +7,210 @@
 <meta name="description" content="徐啟赫的遊戲企劃作品集：兩款已上架 itch.io 的 Game Jam 作品、完整遊戲企劃書、互動裝置與 UI/UX 研究。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Fondamento&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f1e8; --bg-2:#efe7d9; --card:#fffdf8; --ink:#231f1a; --ink-2:#5c544a; --ink-3:#8a8073;
-  --line:#e2d8c7; --accent:#e46f24; --accent-ink:#b4500f; --accent-soft:#fbe3cf;
-  --teal:#1f7a74; --teal-soft:#d6ece9; --gold:#b98a12; --gold-soft:#f5e8c2; --violet:#6b4fa3; --violet-soft:#e7e0f3;
-  --shadow:0 1px 2px rgba(60,40,10,.06),0 8px 24px rgba(60,40,10,.06);
-  --radius:18px; --max:1120px;
+  /* outer stage — always night */
+  --night:#0a0708; --night-2:#140d0f; --blood:#e8761e; --blood-hi:#ff9a3d; --brass:#b8955a;
+  /* paper column */
+  --paper:#f6f4f1; --card:#ffffff; --inset:#efedea; --ink:#1a1315; --ink-2:#4e4447; --ink-3:#86797b;
+  --line:#e2dbd4; --accent:#b9500c; --accent-ink:#9c420a; --accent-soft:#fbe7d5;
+  --teal:#2f6767; --teal-soft:#dfeceb; --gold:#a8843f; --gold-soft:#f3ead7; --violet:#5d3f6a; --violet-soft:#ede4f0;
+  --noise:.05;
+  --display:"Fondamento","Noto Serif TC",serif;
+  --serif:"Cormorant Garamond","Noto Serif TC",serif;
+  --zh-serif:"Noto Serif TC",serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#16130f; --bg-2:#1d1914; --card:#221d17; --ink:#f2ebe0; --ink-2:#c3b8a8; --ink-3:#8f8576;
-    --line:#3a3229; --accent:#f08a45; --accent-ink:#ffb27c; --accent-soft:#3d2614;
-    --teal:#5cc2b8; --teal-soft:#16302d; --gold:#e3b743; --gold-soft:#352a0e; --violet:#b39ae6; --violet-soft:#2a2240;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+    --paper:#130e10; --card:#1b1517; --inset:#241d1f; --ink:#f1e9e4; --ink-2:#c6bab5; --ink-3:#8f8380;
+    --line:#3a2f31; --accent:#f08a3c; --accent-ink:#ffb27c; --accent-soft:#3d2412;
+    --teal:#74bab5; --teal-soft:#152a2a; --gold:#d4b06a; --gold-soft:#2f2615; --violet:#c6a3d9; --violet-soft:#2a1f30;
+    --noise:.035;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#16130f; --bg-2:#1d1914; --card:#221d17; --ink:#f2ebe0; --ink-2:#c3b8a8; --ink-3:#8f8576;
-  --line:#3a3229; --accent:#f08a45; --accent-ink:#ffb27c; --accent-soft:#3d2614;
-  --teal:#5cc2b8; --teal-soft:#16302d; --gold:#e3b743; --gold-soft:#352a0e; --violet:#b39ae6; --violet-soft:#2a2240;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --paper:#130e10; --card:#1b1517; --inset:#241d1f; --ink:#f1e9e4; --ink-2:#c6bab5; --ink-3:#8f8380;
+  --line:#3a2f31; --accent:#f08a3c; --accent-ink:#ffb27c; --accent-soft:#3d2412;
+  --teal:#74bab5; --teal-soft:#152a2a; --gold:#d4b06a; --gold-soft:#2f2615; --violet:#c6a3d9; --violet-soft:#2a1f30;
+  --noise:.035;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 "Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:20px}
+body{margin:0;background:var(--night);color:var(--ink);font:16px/1.8 "Noto Sans TC",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:var(--accent-ink)}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
-.latin{font-family:"Space Grotesk","Noto Sans TC",sans-serif}
+.latin{font-family:var(--serif)}
+.stat b,.num,.tl b{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
 
-/* nav */
-.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
-.brand{font-weight:900;letter-spacing:.04em;text-decoration:none;color:var(--ink);white-space:nowrap}
-.brand span{color:var(--accent)}
-.nav ul{display:flex;gap:4px;list-style:none;margin:0 0 0 auto;padding:0;overflow-x:auto;scrollbar-width:none}
-.nav ul::-webkit-scrollbar{display:none}
-.nav a.l{display:block;padding:6px 12px;border-radius:999px;color:var(--ink-2);text-decoration:none;font-size:14px;white-space:nowrap}
-.nav a.l:hover{background:var(--bg-2);color:var(--ink)}
-.theme{border:1px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:999px;width:34px;height:34px;cursor:pointer;flex:none}
+/* ---------- backdrop ---------- */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(60% 50% at 12% 100%,rgba(232,118,30,.28),transparent 70%),
+  radial-gradient(40% 35% at 95% 10%,rgba(232,118,30,.16),transparent 70%),
+  linear-gradient(rgba(10,7,8,.86),rgba(10,7,8,.94)),
+  url(img/kira-cover.jpg) center/cover no-repeat}
+.bg::after{content:"";position:absolute;inset:0;opacity:.35;background:
+  repeating-linear-gradient(115deg,transparent 0 46px,rgba(232,118,30,.08) 46px 47px),
+  radial-gradient(circle at 1px 1px,rgba(255,255,255,.06) 1px,transparent 1.5px) 0 0/14px 14px}
+
+.layout>*,.cols>*,.cols3>*,.minis>*{min-width:0}
+.layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,880px) 104px;min-height:100vh}
+
+/* ---------- left stage ---------- */
+.stage{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:32px 28px;color:#efe6e0;text-align:center}
+.logo{display:flex;flex-direction:column;align-items:center;line-height:1}
+.logo-zh{font-family:var(--zh-serif);font-weight:900;font-size:clamp(44px,4.6vw,68px);letter-spacing:.14em;margin-right:-.14em;color:var(--blood);
+  text-shadow:0 0 1px #ffc07a,0 0 18px rgba(255,154,61,.55),0 0 42px rgba(232,118,30,.35)}
+.logo-en{font-family:var(--display);font-size:15px;letter-spacing:.18em;color:#d9c9b5;margin-top:12px}
+.logo-en::before,.logo-en::after{content:"✦";color:var(--brass);font-size:10px;margin:0 10px;vertical-align:3px}
+.stage{container-type:inline-size}
+.key{margin:0;width:min(82%,400px,46vh*1.6);position:relative}
+.slides{position:relative;aspect-ratio:16/10;border:1px solid var(--brass);outline:1px solid rgba(184,149,90,.45);outline-offset:6px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(232,118,30,.25);transform:rotate(-2deg);background:#000}
+.slides img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;cursor:zoom-in;opacity:0;transform:scale(1.06);
+  transition:opacity .9s ease,transform 4.8s ease-out}
+.slides img.on{opacity:1;transform:scale(1);z-index:1}
+.slides .nav-btn{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:1px solid var(--brass);
+  background:rgba(10,7,8,.6);color:#efe4d2;font-size:14px;cursor:pointer;opacity:0;transition:opacity .2s}
+.slides .prev{left:10px}.slides .next{right:10px}
+.key:hover .nav-btn,.slides .nav-btn:focus-visible{opacity:1}
+.key figcaption{font-family:var(--display);font-size:14px;color:#d9c9b5;margin-top:18px;letter-spacing:.06em;min-height:1.6em}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.dots button{width:22px;height:4px;padding:0;border:0;background:rgba(239,228,210,.25);cursor:pointer;transition:background .3s,width .3s}
+.dots button.on{background:var(--blood);width:34px}
+.hexnav{display:grid;grid-template-columns:repeat(3,auto);gap:4px 12px;justify-content:center}
+.hex{--s:min(124px,calc((100cqi - 26px)/3),14vh);width:var(--s);height:calc(var(--s)*1.1);display:block;padding:2px;background:var(--blood);text-decoration:none;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);transition:transform .2s,filter .2s}
+.hex span{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(14,9,10,.92);
+  clip-path:inherit;color:var(--blood-hi);font-family:var(--display);font-size:calc(var(--s)*.17);line-height:1.1}
+.hex small{font-family:"Noto Sans TC";font-size:calc(var(--s)*.11);color:#cdbcb2;letter-spacing:.08em;margin-top:2px}
+.hex span::after{content:"▸";font-size:calc(var(--s)*.1);margin-top:3px}
+.hex:hover{transform:translateY(-3px);filter:drop-shadow(0 0 10px rgba(255,154,61,.6))}
+.hex:hover span{background:rgba(72,34,8,.95)}
+.stage .copy{font-size:11px;color:#7d6f6a;letter-spacing:.1em}
+
+/* ---------- right rail ---------- */
+.rail{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;gap:16px;padding-top:34px}
+.orb{width:50px;height:50px;border-radius:50%;border:2px solid var(--brass);background:#efe4d2;color:var(--accent);cursor:pointer;
+  box-shadow:0 0 0 3px var(--night),0 0 0 4px rgba(184,149,90,.7),0 6px 18px rgba(0,0,0,.5);font:700 18px/1 var(--display);
+  display:grid;place-items:center;text-decoration:none;transition:transform .2s}
+.orb:hover{transform:scale(1.08)}
+.orb small{display:block;font-size:9px;letter-spacing:.06em;margin-top:2px}
+
+/* ---------- paper column ---------- */
+.paper{position:relative;margin:96px 0 0;background-color:var(--paper);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+  background-blend-mode:multiply;
+  border-radius:50% 50% 0 0 / 64px 64px 0 0;box-shadow:0 0 80px rgba(0,0,0,.6)}
+:root[data-theme="dark"] .paper{background-blend-mode:soft-light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .paper{background-blend-mode:soft-light}}
+.crest{position:absolute;left:50%;top:-74px;transform:translateX(-50%);width:150px;color:#e9e1d6;filter:drop-shadow(0 4px 10px rgba(0,0,0,.6))}
+.wrap{padding:0 52px}
 
 /* hero */
-.hero{padding:88px 0 56px;position:relative;overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:center}
-.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;letter-spacing:.12em;color:var(--accent-ink);font-weight:700;text-transform:uppercase}
-.eyebrow::before{content:"";width:22px;height:2px;background:var(--accent);border-radius:2px}
-h1{font-size:clamp(40px,6vw,68px);line-height:1.12;margin:14px 0 18px;font-weight:900;letter-spacing:.01em}
-h1 em{font-style:normal;color:var(--accent);position:relative}
-.lede{font-size:18px;color:var(--ink-2);max-width:36em;margin:0 0 28px}
+.hero{padding:70px 0 48px;text-align:center}
+.title-en{font-family:var(--display);font-size:clamp(64px,10vw,120px);line-height:1;color:var(--ink);letter-spacing:-.01em}
+.eyebrow{font-family:var(--display);color:var(--accent);font-size:15px;letter-spacing:.12em;margin-top:6px}
+h1{font-family:var(--zh-serif);font-size:clamp(30px,4.2vw,46px);line-height:1.35;margin:26px 0 18px;font-weight:900}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:16.5px;color:var(--ink-2);max-width:34em;margin:0 auto 28px;text-align:left}
 .btns{display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:700;text-decoration:none;font-size:15px;border:1.5px solid var(--ink);color:var(--ink);background:transparent;transition:transform .15s}
+.hero .btns{justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;font-weight:700;text-decoration:none;font-size:15px;color:#fff;background:var(--ink);
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);transition:transform .15s,background .15s}
 .btn:hover{transform:translateY(-2px)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.hero-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);transform:rotate(1.5deg)}
-.hero-card img{border-radius:14px;aspect-ratio:16/9;object-fit:cover;width:100%}
-.hero-card .cap{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-3);margin-top:10px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:56px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
-.stat b{display:block;font-family:"Space Grotesk";font-size:30px;line-height:1.1;color:var(--accent-ink)}
-.stat span{font-size:13.5px;color:var(--ink-2)}
+.btn.primary{background:var(--accent)}
+.btn.primary:hover{background:var(--accent-ink)}
+:root[data-theme="dark"] .btn:not(.primary){background:#efe4d2;color:#1a1315}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn:not(.primary){background:#efe4d2;color:#1a1315}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:44px}
+.stat{background:var(--inset);border-radius:14px;padding:16px 18px;text-align:center}
+.stat b{display:block;font-family:var(--serif);font-size:44px;line-height:1;color:var(--accent);font-weight:600}
+.stat span{font-size:14px;color:var(--ink-2)}
 
-/* sections */
-section{padding:72px 0}
-.sec-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px;flex-wrap:wrap}
-.sec-head h2{font-size:clamp(28px,3.6vw,40px);margin:6px 0 0;line-height:1.2;font-weight:900}
-.sec-head p{margin:0;color:var(--ink-2);max-width:34em}
-.alt{background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+/* section heads */
+section{padding:64px 0}
+.sec-head{text-align:center;margin-bottom:34px}
+.sec-head .en{font-family:var(--display);font-size:clamp(34px,5vw,50px);line-height:1.1;color:var(--accent)}
+.sec-head .en i{font-style:normal;font-family:var(--serif);font-size:.5em;color:var(--gold);vertical-align:.5em;margin-right:8px}
+.sec-head h2{font-family:var(--zh-serif);font-size:clamp(20px,2.6vw,24px);margin:8px 0 0;font-weight:700;letter-spacing:.08em}
+.flourish{display:block;width:220px;height:26px;margin:10px auto 14px;color:var(--gold)}
+.sec-head p{margin:0 auto;color:var(--ink-2);max-width:36em;font-size:15px}
+.alt{background:color-mix(in srgb,var(--inset) 70%,transparent);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 
 /* project */
-.project{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:40px}
-.p-cover{position:relative}
+.project{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:40px;position:relative;box-shadow:0 10px 30px rgba(50,25,5,.07)}
+.project::before,.project::after{content:"";position:absolute;width:26px;height:26px;border:2px solid var(--gold);pointer-events:none;z-index:2}
+.project::before{top:-5px;left:-5px;border-right:0;border-bottom:0}
+.project::after{bottom:-5px;right:-5px;border-left:0;border-top:0}
+.p-cover{position:relative;overflow:hidden;border-radius:6px 6px 0 0}
 .p-cover img{width:100%;aspect-ratio:21/9;object-fit:cover}
-.p-cover .badge{position:absolute;left:20px;top:20px}
-.badge{display:inline-flex;align-items:center;gap:6px;background:var(--ink);color:var(--bg);font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;letter-spacing:.04em}
-.p-body{padding:36px 40px 40px}
-.p-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
-.p-title h3{font-size:clamp(26px,3vw,34px);margin:0;font-weight:900;line-height:1.25}
-.p-title .sub{color:var(--ink-3);font-size:15px}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
-.tag{font-size:13px;padding:3px 11px;border-radius:999px;background:var(--bg-2);color:var(--ink-2);border:1px solid var(--line)}
-.pitch{font-size:18px;color:var(--ink);margin:0 0 22px;max-width:46em}
-.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0 0 28px}
-.meta-grid div{background:var(--card);padding:12px 16px}
+.p-cover .badge{position:absolute;left:18px;top:18px}
+.badge{display:inline-block;background:var(--accent);color:#fff;font-family:var(--display);font-size:14px;padding:5px 18px;letter-spacing:.04em;
+  clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%)}
+.p-body{padding:34px 36px 38px}
+.p-title{text-align:center}
+.p-title h3{font-family:var(--display);font-size:clamp(30px,3.6vw,40px);margin:0;font-weight:400;line-height:1.2;color:var(--accent)}
+.p-title h3:lang(zh-Hant){font-family:var(--zh-serif);font-weight:900}
+.p-title .sub{display:block;color:var(--ink-3);font-size:14.5px;margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 18px}
+.p-body>.tags{justify-content:center}
+.tag{font-size:12.5px;padding:2px 10px;border-radius:3px;background:transparent;color:var(--ink-2);border:1px solid color-mix(in srgb,var(--gold) 55%,transparent)}
+.pitch{font-size:16.5px;color:var(--ink);margin:0 0 22px}
+.meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 24px}
+.meta-grid div{background:var(--inset);padding:10px 14px;border-radius:10px;text-align:center}
 .meta-grid dt{font-size:12px;color:var(--ink-3);letter-spacing:.06em}
-.meta-grid dd{margin:2px 0 0;font-weight:700;font-size:14.5px}
-h4{font-size:19px;margin:34px 0 12px;display:flex;align-items:center;gap:10px}
-h4 .n{font-family:"Space Grotesk";font-size:13px;color:var(--accent-ink);background:var(--accent-soft);border-radius:8px;padding:1px 8px}
+.meta-grid dd{margin:2px 0 0;font-weight:700;font-size:14px}
+.p-body>.btns{justify-content:center}
+h4{font-family:var(--zh-serif);font-size:18px;font-weight:700;margin:36px 0 14px;display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--gold) 70%,transparent)}
+h4 .n{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--gold);display:grid;place-items:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--accent)}
 p{margin:0 0 14px}
 .muted{color:var(--ink-2)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.box{border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:var(--bg)}
-.box h5{margin:0 0 6px;font-size:16px}
-.box p{margin:0;font-size:14.5px;color:var(--ink-2)}
-.insight{border-left:4px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 14px 14px 0;margin:18px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.box{border-radius:12px;padding:16px 18px;background:var(--inset)}
+.box h5{margin:0 0 6px;font-size:15.5px;font-family:var(--zh-serif)}
+.box p{margin:0;font-size:14px;color:var(--ink-2)}
+.insight{border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft);padding:14px 18px;border-radius:12px;margin:18px 0;position:relative}
 .insight b{color:var(--accent-ink)}
 
 /* flow */
 .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:6px 0 4px}
-.step{flex:1 1 120px;min-width:110px;border-radius:14px;padding:12px 14px;border:1px solid var(--line);background:var(--bg);font-size:14px;position:relative}
+.step{flex:1 1 110px;min-width:100px;border-radius:12px;padding:10px 14px;background:var(--inset);font-size:14px}
 .step small{display:block;color:var(--ink-3);font-size:12px}
-.step b{display:block;font-size:15px}
-.step.c1{background:var(--accent-soft);border-color:transparent}
-.step.c2{background:var(--teal-soft);border-color:transparent}
-.step.c3{background:var(--gold-soft);border-color:transparent}
-.step.c4{background:var(--violet-soft);border-color:transparent}
-.arrow{align-self:center;color:var(--ink-3);font-weight:700}
+.step b{display:block;font-size:14.5px}
+.step.c1{background:var(--accent-soft)}
+.step.c2{background:var(--teal-soft)}
+.step.c3{background:var(--gold-soft)}
+.step.c4{background:var(--violet-soft)}
+.arrow{align-self:center;color:var(--gold);font-weight:700}
 
 /* mask cards */
-.mask{border-radius:18px;padding:20px;border:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;gap:10px}
-.mask .top{display:flex;align-items:center;justify-content:space-between}
-.mask .virtue{font-weight:900;font-size:20px}
-.mask .pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
-.mask.m1 .pill{background:var(--accent-soft);color:var(--accent-ink)}
-.mask.m2 .pill{background:var(--teal-soft);color:var(--teal)}
-.mask.m3 .pill{background:var(--gold-soft);color:var(--gold)}
-.mask img{border-radius:12px;aspect-ratio:16/9;object-fit:cover}
-.mask ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-2)}
-.mask .why{font-size:14px;border-top:1px dashed var(--line);padding-top:10px;margin-top:auto}
+.mask{border-radius:12px;padding:16px;background:var(--inset);display:flex;flex-direction:column;gap:10px}
+.mask .top{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.mask .virtue{font-family:var(--zh-serif);font-weight:900;font-size:21px}
+.mask .pill{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px}
+.mask.m1 .virtue,.mask.m1 .pill{color:var(--accent)}.mask.m1 .pill{background:var(--accent-soft)}
+.mask.m2 .virtue,.mask.m2 .pill{color:var(--teal)}.mask.m2 .pill{background:var(--teal-soft)}
+.mask.m3 .virtue,.mask.m3 .pill{color:var(--gold)}.mask.m3 .pill{background:var(--gold-soft)}
+.mask img{border-radius:8px;aspect-ratio:16/9;object-fit:cover;cursor:zoom-in}
+.mask ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2)}
+.mask .why{font-size:13.5px;border-top:1px dashed color-mix(in srgb,var(--gold) 60%,transparent);padding-top:10px;margin-top:auto}
 
 /* tables */
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
-table{border-collapse:collapse;width:100%;font-size:14px;min-width:720px}
-th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12.5px;color:var(--ink-3);font-weight:700;letter-spacing:.04em;background:var(--bg);white-space:nowrap}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:720px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--ink-3);font-weight:700;letter-spacing:.04em;background:var(--inset);white-space:nowrap}
 tr:last-child td{border-bottom:0}
 td.c{text-align:center}
 .y{color:var(--teal);font-weight:900}
 .x{color:var(--ink-3)}
-.num{font-family:"Space Grotesk";font-weight:700}
+.num{font-family:var(--serif);font-weight:700;font-size:1.08em}
 
 /* gallery */
 .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.gallery img,.shot{border-radius:12px;width:100%;aspect-ratio:4/3;object-fit:cover;cursor:zoom-in;border:1px solid var(--line);background:var(--bg-2)}
+.gallery img,.shot{border-radius:8px;width:100%;aspect-ratio:4/3;object-fit:cover;cursor:zoom-in;background:var(--inset)}
 .shot.wide{aspect-ratio:16/9}
 .gallery .big{grid-column:span 2;grid-row:span 2}
 .gallery .big img{height:100%;aspect-ratio:auto}
@@ -149,111 +218,151 @@ figure{margin:0}
 figcaption{font-size:12.5px;color:var(--ink-3);margin-top:6px}
 
 /* quotes */
-.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.quote{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:15px}
-.quote::before{content:"“";font-family:Georgia,serif;font-size:36px;line-height:0;color:var(--accent);display:block;margin:10px 0 6px}
-.quote small{display:block;color:var(--ink-3);margin-top:6px;font-size:12px}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.quote{background:var(--inset);border-radius:12px;padding:14px 16px;font-size:15px;font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.4}
+.quote::before{content:"“";font-family:var(--serif);font-size:44px;line-height:0;color:var(--accent);display:block;margin:14px 0 4px}
+.quote small{display:block;color:var(--ink-3);margin-top:8px;font:12px "Noto Sans TC",sans-serif}
 
 /* timeline */
-.tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:8px 0 6px}
-.tl::before{content:"";position:absolute;left:0;right:0;top:15px;height:3px;background:linear-gradient(90deg,var(--teal),var(--gold),var(--accent));border-radius:3px}
-.tl div{padding-top:30px;position:relative;font-size:14px;padding-right:12px}
-.tl div::before{content:"";position:absolute;top:8px;left:0;width:17px;height:17px;border-radius:50%;background:var(--card);border:3px solid var(--ink)}
-.tl b{display:block;font-family:"Space Grotesk";font-size:18px}
+.tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);margin:8px 0 6px}
+.tl::before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+.tl div{padding-top:30px;position:relative;font-size:13.5px;padding-right:12px}
+.tl div::before{content:"";position:absolute;top:8px;left:0;width:16px;height:16px;transform:rotate(45deg);background:var(--card);border:2px solid var(--accent)}
+.tl b{display:block;font-family:var(--serif);font-size:22px;color:var(--accent)}
 .tl span{color:var(--ink-2)}
 
 /* skills */
-.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.skill{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
-.skill h3{margin:0 0 4px;font-size:18px}
-.skill .ev{font-size:13px;color:var(--ink-3);margin-bottom:10px}
-.skill ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14.5px}
-.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.tool{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14px;font-weight:500}
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.skill{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:20px 22px}
+.skill h3{margin:0 0 2px;font-size:18px;font-family:var(--zh-serif)}
+.skill .ev{font-size:12.5px;color:var(--gold);margin-bottom:10px}
+.skill ul{margin:0;padding-left:18px;color:var(--ink-2);font-size:14px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;justify-content:center}
+.tool{background:var(--inset);border-radius:999px;padding:5px 14px;font-size:13.5px;font-weight:500}
 
 /* small projects */
-.minis{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.mini{background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
-.mini .im{background:var(--bg-2);border-bottom:1px solid var(--line)}
+.minis{display:grid;grid-template-columns:1fr;gap:24px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
 .mini .im img{width:100%;aspect-ratio:16/9;object-fit:cover;cursor:zoom-in}
-.mini .bd{padding:22px 24px 26px}
-.mini h3{margin:0 0 4px;font-size:21px}
+.mini .bd{padding:22px 26px 26px}
+.mini h3{margin:0 0 4px;font-size:21px;font-family:var(--zh-serif)}
 
 /* contact */
-.contact{background:var(--ink);color:var(--bg);border-radius:28px;padding:48px;display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center}
-.contact h2{margin:0 0 10px;font-size:clamp(28px,3.6vw,40px);line-height:1.2}
-.contact p{color:color-mix(in srgb,var(--bg) 75%,transparent)}
-.links{display:grid;gap:10px}
-.links a{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:14px;background:color-mix(in srgb,var(--bg) 10%,transparent);color:var(--bg);text-decoration:none;font-weight:700}
-.links a:hover{background:color-mix(in srgb,var(--bg) 18%,transparent)}
-.links a span{font-weight:400;opacity:.7;font-size:14px}
-footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
+.contact{background:#0d0909;color:#efe6e0;border:1px solid var(--brass);outline:1px solid rgba(184,149,90,.4);outline-offset:-8px;border-radius:6px;padding:46px 40px;text-align:center;
+  background-image:radial-gradient(70% 90% at 50% 120%,rgba(232,118,30,.35),transparent 70%)}
+.contact .en{font-family:var(--display);color:var(--blood-hi);font-size:20px;letter-spacing:.1em}
+.contact h2{margin:6px 0 10px;font-family:var(--zh-serif);font-size:clamp(26px,3.4vw,36px);line-height:1.3}
+.contact p{color:#bfb1aa}
+.links{display:grid;gap:10px;max-width:460px;margin:22px auto 0}
+.links a{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(184,149,90,.35);color:#efe6e0;text-decoration:none;font-family:var(--display);font-size:17px}
+.links a:hover{background:rgba(232,118,30,.25)}
+.links a span{font:400 14px "Noto Sans TC",sans-serif;opacity:.75}
+footer{padding:12px 0 48px;color:var(--ink-3);font-size:12.5px;text-align:center}
 
 /* lightbox */
-.lb{position:fixed;inset:0;background:rgba(10,8,6,.88);display:none;align-items:center;justify-content:center;z-index:50;padding:24px;cursor:zoom-out}
+.lb{position:fixed;inset:0;background:rgba(8,4,5,.92);display:none;align-items:center;justify-content:center;z-index:50;padding:24px;cursor:zoom-out}
 .lb.on{display:flex}
-.lb img{max-height:90vh;max-width:min(1400px,95vw);border-radius:10px}
+.lb img{max-height:90vh;max-width:min(1400px,95vw);border:1px solid var(--brass)}
 
-@media (max-width:900px){
-  .hero{padding:48px 0 32px}
-  .hero .wrap{grid-template-columns:1fr;gap:32px}
-  .hero-card{transform:none}
-  .stats{grid-template-columns:repeat(2,1fr);margin-top:32px}
-  .cols,.minis,.contact{grid-template-columns:1fr}
-  .cols3,.skills,.quotes{grid-template-columns:1fr}
+@media (prefers-reduced-motion: reduce){.slides img{transition:opacity .3s;transform:none}html{scroll-behavior:auto}}
+
+@media (max-width:1180px){
+  .layout{grid-template-columns:minmax(0,1fr);max-width:900px;margin:0 auto}
+  .stage{position:relative;height:auto;padding:48px 20px 20px}
+  .key{width:min(88%,420px)}
+  .rail{position:fixed;right:14px;bottom:14px;top:auto;height:auto;padding:0;z-index:30;flex-direction:column-reverse;gap:12px}
+  .paper{margin-top:90px}
+}
+@media (max-width:760px){
+  .wrap{padding:0 20px}
+  .cols,.cols3,.skills,.quotes{grid-template-columns:1fr}
   .meta-grid{grid-template-columns:repeat(2,1fr)}
   .gallery{grid-template-columns:repeat(2,1fr)}
-  .p-body{padding:26px 20px 28px}
+  .stats{grid-template-columns:1fr 1fr}
+  .p-body{padding:26px 18px 28px}
   .p-cover img{aspect-ratio:16/9}
   .tl{grid-template-columns:1fr 1fr;row-gap:12px}
   .tl::before{display:none}
-  .contact{padding:30px 22px}
-  section{padding:52px 0}
+  .contact{padding:34px 20px}
+  section{padding:48px 0}
+  .paper{border-radius:50% 50% 0 0 / 36px 36px 0 0}
+  .hero{padding-top:56px}
 }
-@media (max-width:520px){
+@media (max-width:420px){
   .wrap{padding:0 16px}
-  .nav ul{display:none}
-  .brand{margin-right:auto}
+  .stats{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
+<div class="bg" aria-hidden="true"></div>
 
-<nav class="nav">
-  <div class="wrap">
-    <a class="brand" href="#top">徐啟赫<span>．</span>遊戲企劃</a>
-    <ul>
-      <li><a class="l" href="#games">遊戲作品</a></li>
-      <li><a class="l" href="#docs">企劃書</a></li>
-      <li><a class="l" href="#install">互動裝置</a></li>
-      <li><a class="l" href="#ux">UI/UX</a></li>
-      <li><a class="l" href="#skills">能力</a></li>
-      <li><a class="l" href="#contact">聯絡</a></li>
-    </ul>
-    <button class="theme" id="theme" aria-label="切換深淺色">◐</button>
-  </div>
-</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="fl" viewBox="0 0 220 26">
+    <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+      <path d="M4 13H84M136 13H216"/>
+      <path d="M84 13c6-9 16-9 20-2c3 5-2 9-6 7M136 13c-6-9-16-9-20-2c-3 5 2 9 6 7"/>
+      <path d="M84 13c6 9 16 9 20 2M136 13c-6 9-16 9-20 2"/>
+      <path d="M110 4c-6 4-6 14 0 18c6-4 6-14 0-18z"/>
+    </g>
+    <circle cx="4" cy="13" r="2" fill="currentColor"/><circle cx="216" cy="13" r="2" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="layout">
+
+<aside class="stage">
+  <div class="logo"><span class="logo-zh">徐啟赫</span><span class="logo-en">Game Design Portfolio</span></div>
+  <figure class="key" id="key" aria-roledescription="carousel" aria-label="作品看板">
+    <div class="slides">
+      <img class="zoom on" src="img/kira-cover.jpg" alt="Kira's Mask 主視覺" data-cap="Kira's Mask · Winter MelonJam 2025">
+      <img class="zoom" src="img/com-cover.jpg" alt="Click or Miss 主視覺" data-cap="Click or Miss · HoloJam #7" loading="lazy">
+      <img class="zoom" src="img/grad-room.jpg" alt="畢業專題互動聲音裝置展場" data-cap="Graduation Project · 互動聲音裝置" loading="lazy">
+      <img class="zoom" src="img/kira-cave.jpg" alt="Kira's Mask 洞窟場景" data-cap="Kira's Mask · 慈悲之章" loading="lazy">
+      <img class="zoom" src="img/ux-travel-mock.jpg" alt="五感旅遊 App 介面" data-cap="UI / UX · 五感旅遊 App" loading="lazy">
+      <button class="nav-btn prev" type="button" aria-label="上一張">‹</button>
+      <button class="nav-btn next" type="button" aria-label="下一張">›</button>
+    </div>
+    <figcaption aria-live="polite">Kira's Mask · Winter MelonJam 2025</figcaption>
+    <div class="dots" role="tablist" aria-label="選擇看板圖片"></div>
+  </figure>
+  <nav class="hexnav" aria-label="章節導覽">
+    <a class="hex" href="#games"><span>Games<small>遊戲作品</small></span></a>
+    <a class="hex" href="#docs"><span>Design<small>企劃書</small></span></a>
+    <a class="hex" href="#install"><span>Install<small>互動裝置</small></span></a>
+    <a class="hex" href="#ux"><span>UI/UX<small>使用者研究</small></span></a>
+    <a class="hex" href="#skills"><span>Skills<small>能力</small></span></a>
+    <a class="hex" href="#contact"><span>Contact<small>聯絡</small></span></a>
+  </nav>
+  <div class="copy">© 2026 HSU CHI-HE</div>
+</aside>
+
+<main class="paper">
+  <svg class="crest" viewBox="0 0 150 80" aria-hidden="true">
+    <g fill="currentColor">
+      <path d="M75 6c-7 9-7 20 0 27c7-7 7-18 0-27z"/>
+      <path d="M44 22c-2 11 3 20 13 22c1-10-4-19-13-22zM106 22c2 11-3 20-13 22c-1-10 4-19 13-22z"/>
+      <path d="M20 40c4 9 13 13 22 10c-4-9-13-13-22-10zM130 40c-4 9-13 13-22 10c4-9 13-13 22-10z"/>
+      <circle cx="75" cy="3" r="3"/><circle cx="42" cy="18" r="2.5"/><circle cx="108" cy="18" r="2.5"/>
+      <path d="M30 62c15-12 30-16 45-16s30 4 45 16c-15-6-30-8-45-8s-30 2-45 8z"/>
+      <path d="M58 52h34l-4 10H62z"/>
+    </g>
+  </svg>
 
 <header class="hero" id="top">
   <div class="wrap">
-    <div>
-      <div class="eyebrow">Game Designer Portfolio</div>
-      <h1>把一種<em>感受</em>，<br>設計成一套<em>機制</em>。</h1>
-      <p class="lede">我是徐啟赫，一位會自己動手把想法做出來的遊戲企劃。從企劃書的數值與關卡，到 Unity 實作、上架 itch.io、收到真實玩家回饋——我在乎的是「玩家玩的當下感受到什麼」，並用規則、節奏與回饋去精準製造它。</p>
-      <div class="btns">
-        <a class="btn primary" href="#games">看遊戲作品 ↓</a>
-        <a class="btn" href="https://weeaboo69.itch.io/" target="_blank" rel="noopener">itch.io 主頁 ↗</a>
-      </div>
+    <div class="title-en">Portfolio</div>
+    <div class="eyebrow">Game Designer · 徐啟赫</div>
+    <svg class="flourish"><use href="#fl"/></svg>
+    <h1>把一種<em>感受</em>，<br>設計成一套<em>機制</em>。</h1>
+    <p class="lede">我是徐啟赫，一位會自己動手把想法做出來的遊戲企劃。從企劃書的數值與關卡，到 Unity 實作、上架 itch.io、收到真實玩家回饋——我在乎的是「玩家玩的當下感受到什麼」，並用規則、節奏與回饋去精準製造它。</p>
+    <div class="btns">
+      <a class="btn primary" href="#games">看遊戲作品 ↓</a>
+      <a class="btn" href="https://weeaboo69.itch.io/" target="_blank" rel="noopener">itch.io 主頁 ↗</a>
     </div>
-    <div class="hero-card">
-      <img src="img/kira-cover.jpg" alt="Kira's Mask 主視覺">
-      <div class="cap"><span>Kira's Mask</span><span class="latin">Winter MelonJam 2025</span></div>
-    </div>
-  </div>
-  <div class="wrap">
     <div class="stats">
       <div class="stat"><b>2</b><span>款已上架 itch.io、可直接遊玩的 Game Jam 作品</span></div>
-      <div class="stat"><b>2</b><span>份完整遊戲企劃書（提案＋系統／關卡設計）</span></div>
+      <div class="stat"><b>1</b><span>份完整期末遊戲企劃書（系統／關卡／怪物規格）</span></div>
       <div class="stat"><b>1</b><span>件實體互動聲音裝置，於畢業展展出</span></div>
       <div class="stat"><b>5</b><span>種怪物 AI 行為規格，含數值與能力矩陣</span></div>
     </div>
@@ -264,7 +373,9 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 <section id="games">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="eyebrow">01 · Shipped Games</div><h2>上架遊戲作品</h2></div>
+      <div class="en"><i>I</i>Shipped Games</div>
+      <h2>上架遊戲作品</h2>
+      <svg class="flourish"><use href="#fl"/></svg>
       <p>兩款都在 Game Jam 的時限內從概念做到可玩版本並公開發佈。點擊按鈕可直接在瀏覽器遊玩。</p>
     </div>
 
@@ -409,13 +520,15 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 <section id="docs" class="alt">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="eyebrow">02 · Design Documents</div><h2>遊戲企劃書</h2></div>
-      <p>「遊戲企劃」課程的分組作品（與黃柏崴合作）：從一頁式提案，到含流程、畫面、關卡與怪物規格的期末企劃書。</p>
+      <div class="en"><i>II</i>Design Document</div>
+      <h2>遊戲企劃書</h2>
+      <svg class="flourish"><use href="#fl"/></svg>
+      <p>「遊戲企劃」課程的分組作品（與黃柏崴合作）：含流程、畫面、關卡與怪物規格的期末企劃書。</p>
     </div>
 
     <article class="project">
       <div class="p-body">
-        <div class="p-title"><h3>惡夢裡的鬼抓人</h3><span class="sub">2D 橫向生存恐怖｜期末遊戲企劃書</span></div>
+        <div class="p-title"><h3 lang="zh-Hant">惡夢裡的鬼抓人</h3><span class="sub">2D 橫向生存恐怖｜期末遊戲企劃書</span></div>
         <div class="tags"><span class="tag">系統設計</span><span class="tag">怪物 AI 規格</span><span class="tag">關卡設計</span><span class="tag">難度曲線</span><span class="tag">流程圖</span></div>
         <p class="pitch">膽小的主角為了交到朋友，答應半夜到學校探險，卻在校門口昏倒，夢見自己被困在充滿怪物的學校。<b>目標只有一個：活過 30 分鐘。</b></p>
         <dl class="meta-grid">
@@ -467,7 +580,7 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
               <div class="step" style="flex:1"><b style="color:var(--accent)">■ 門</b><small>進入教室，可搜刮道具</small></div>
               <div class="step" style="flex:1"><b style="color:var(--teal)">■ 置物櫃</b><small>躲藏，部分怪物找不到</small></div>
             </div>
-            <ul class="muted" style="padding-left:18px;margin:0">
+            <ul class="muted" style="padding-left:18px;margin:0;font-size:14.5px">
               <li>怪物隨機生成，遊戲時間越長，種類與數量越多。</li>
               <li>教室桌上機率出現回血藥水（+1 格生命），每 5 分鐘刷新；時間越久，掉落率越低。</li>
               <li><b>停電事件：</b>每 2 分鐘停電 20 秒，視野縮到身邊一圈，玩家要靠<b>怪物腳步聲</b>判斷位置。</li>
@@ -501,28 +614,6 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
         <div class="insight"><b>設計重點：</b>警衛機器人的速度（25 格/秒）刻意快到無法逃跑，所以必須搭配「5 秒預告」——它不是考反應，而是考資訊判斷；石像則把「不能看／一定要看」的視線規則變成玩法。</div>
       </div>
     </article>
-
-    <article class="project">
-      <div class="p-body">
-        <div class="p-title"><h3>生命之泉</h3><span class="sub">橫向捲軸動作｜一頁式企劃提案</span></div>
-        <div class="tags"><span class="tag">概念提案</span><span class="tag">競品分析</span><span class="tag">雙人合作</span><span class="tag">歷史題材</span></div>
-        <div class="cols">
-          <div>
-            <p>改編自二戰納粹「生命之泉計畫」（Lebensborn）下出生孩子的真實經歷：主角戰後被送到挪威孤兒院、在敵意中長大而惡夢不斷。遊戲發生在他的夢裡——拿著養父送的、象徵勇氣的狐狸玩偶，打倒現實中恐懼化成的怪物。</p>
-            <p class="muted">畫面採 1930 年代黑白老卡通風格；三個區域分別代表<b>社區、學校、原生父母</b>帶來的恐懼，每區最後一關是首領戰。</p>
-          </div>
-          <div>
-            <dl class="meta-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px">
-              <div><dt>目標族群</dt><dd>18–24 歲</dd></div>
-              <div><dt>人數</dt><dd>1–2 人（同機合作）</dd></div>
-              <div><dt>規模</dt><dd>3 區域・15 關</dd></div>
-              <div><dt>遊玩時長</dt><dd>約 5 小時</dd></div>
-            </dl>
-            <p style="font-size:14.5px"><b>競品定位：</b>Cuphead（畫風與難度）、Castle Crashers（雙人合作）、My Child Lebensborn（題材）。<br><b>雙人差異化：</b>雙人模式中倒下可被隊友救起，單人沒有此機制。</p>
-          </div>
-        </div>
-      </div>
-    </article>
   </div>
 </section>
 
@@ -530,7 +621,9 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 <section id="install">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="eyebrow">03 · Interactive Installation</div><h2>畢業專題：互動聲音裝置</h2></div>
+      <div class="en"><i>III</i>Installation</div>
+      <h2>畢業專題：互動聲音裝置</h2>
+      <svg class="flourish"><use href="#fl"/></svg>
       <p>把日常物件——酒瓶、蒸籠、喇叭——變成「控制器」。觀眾觸碰、轉動、按壓，即時改變現場的音樂；這是我做過最接近「實體遊戲」的作品。</p>
     </div>
     <div class="gallery">
@@ -544,7 +637,7 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
     <div class="cols" style="margin-top:32px">
       <div>
         <h4 style="margin-top:0"><span class="n">A</span>互動設計</h4>
-        <ul class="muted" style="padding-left:18px">
+        <ul class="muted" style="padding-left:18px;font-size:14.5px">
           <li><b>酒瓶標籤＝卡牌：</b>不同酒瓶內藏 RFID，放上感應區就切換曲目或「開始錄音」，像在選擇關卡。</li>
           <li><b>每個物件都有「按下／放開」兩段回饋：</b>按住時循環播放、放開時播收尾音效，讓觀眾感受到操作與聲音的因果。</li>
           <li><b>音效會跟著當前曲目切換音色</b>，同一個動作在不同曲子裡有不同結果，鼓勵重複嘗試。</li>
@@ -568,7 +661,9 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 <section id="ux" class="alt">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="eyebrow">04 · UI/UX Research</div><h2>使用者研究與介面設計</h2></div>
+      <div class="en"><i>IV</i>UI / UX Research</div>
+      <h2>使用者研究與介面設計</h2>
+      <svg class="flourish"><use href="#fl"/></svg>
       <p>企劃的另一半是「理解玩家」。我在 UI/UX 課程中練習了 Persona、使用者旅程、服務藍圖、同理心地圖、資訊架構與可用性測試。</p>
     </div>
     <div class="minis">
@@ -578,7 +673,7 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
           <h3>beanfun! App 遊戲頁改版</h3>
           <div class="tags" style="margin:8px 0 12px"><span class="tag">Persona</span><span class="tag">Journey Map</span><span class="tag">資訊架構</span><span class="tag">Figma</span></div>
           <p class="muted">以「每天上線解每日任務的玩家」為 Persona，發現兩個痛點並提出改版：</p>
-          <ul class="muted" style="padding-left:18px;margin:0">
+          <ul class="muted" style="padding-left:18px;margin:0;font-size:14.5px">
             <li>首頁 9 宮格中多數功能平時用不到 → 收合，只留 QR Code 便利登與最新消息。</li>
             <li>玩家容易忘記各遊戲的每日任務 → 新增行事曆／待辦清單，掃碼登入時同步顯示任務進度。</li>
           </ul>
@@ -609,7 +704,7 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
           <div>
             <h3>C++ 智慧裁切影像處理</h3>
             <div class="tags" style="margin:8px 0 12px"><span class="tag">C++</span><span class="tag">GDI+</span><span class="tag">演算法</span></div>
-            <p class="muted" style="margin:0">程式設計期末專題。自行實作 Canny 邊緣偵測（高斯濾波 → 梯度 → 非最大值抑制 → 雙閾值），再以 16×16 區塊統計邊緣密度，自動裁切出畫面重點。展現我能讀懂並實作演算法，和程式同事溝通無障礙。</p>
+            <p class="muted" style="margin:0;font-size:14.5px">程式設計期末專題。自行實作 Canny 邊緣偵測（高斯濾波 → 梯度 → 非最大值抑制 → 雙閾值），再以 16×16 區塊統計邊緣密度，自動裁切出畫面重點。展現我能讀懂並實作演算法，和程式同事溝通無障礙。</p>
           </div>
           <div class="gallery" style="grid-template-columns:repeat(3,1fr)">
             <figure><img class="zoom" src="img/cpp-logo.jpg" alt="原圖" loading="lazy"><figcaption>原圖</figcaption></figure>
@@ -626,15 +721,17 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 <section id="skills">
   <div class="wrap">
     <div class="sec-head">
-      <div><div class="eyebrow">05 · What I bring</div><h2>我能為團隊做什麼</h2></div>
+      <div class="en"><i>V</i>What I Bring</div>
+      <h2>我能為團隊做什麼</h2>
+      <svg class="flourish"><use href="#fl"/></svg>
       <p>每一項能力都對應到上面可以驗證的作品。</p>
     </div>
     <div class="skills">
       <div class="skill"><h3>系統與數值設計</h3><div class="ev">Kira's Mask・惡夢裡的鬼抓人</div><ul><li>規則與數值的量化規格（速度、間隔、門檻）</li><li>難度曲線與補給／威脅的時間設計</li><li>評級、稀有度與重玩動機</li></ul></div>
       <div class="skill"><h3>關卡與敵人設計</h3><div class="ev">惡夢裡的鬼抓人</div><ul><li>空間佈局（樓層、樓梯、躲藏點）</li><li>敵人能力矩陣，每隻對應不同應對方式</li><li>事件設計（停電、預告巡邏）</li></ul></div>
-      <div class="skill"><h3>敘事與主題整合</h3><div class="ev">Kira's Mask・生命之泉</div><ul><li>世界觀、角色與結局反轉</li><li>讓機制本身承載主題（機制即隱喻）</li><li>劇本撰寫與章節節奏安排</li></ul></div>
+      <div class="skill"><h3>敘事與主題整合</h3><div class="ev">Kira's Mask</div><ul><li>世界觀、角色與結局反轉</li><li>讓機制本身承載主題（機制即隱喻）</li><li>劇本撰寫與章節節奏安排</li></ul></div>
       <div class="skill"><h3>玩家研究與 UX</h3><div class="ev">beanfun! 改版・旅遊 App</div><ul><li>Persona、旅程圖、同理心地圖、服務藍圖</li><li>訪談與可用性測試 → 迭代</li><li>資訊架構與 Figma 原型</li></ul></div>
-      <div class="skill"><h3>企劃文件</h3><div class="ev">兩份企劃書</div><ul><li>一頁式提案（賣點、競品、目標族群）</li><li>完整 GDD：操作、流程圖、畫面說明、關卡、怪物規格</li></ul></div>
+      <div class="skill"><h3>企劃文件</h3><div class="ev">惡夢裡的鬼抓人</div><ul><li>完整 GDD：操作、流程圖、畫面說明、關卡、怪物規格</li><li>難度曲線與事件時間軸規劃</li></ul></div>
       <div class="skill"><h3>原型實作與發佈</h3><div class="ev">兩款 itch.io 作品・畢業專題</div><ul><li>Unity / C# 獨立做出可玩原型</li><li>WebGL 發佈、收集玩家回饋</li><li>硬體互動原型（ESP32、感測器）</li></ul></div>
     </div>
     <div class="tools">
@@ -644,14 +741,12 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section id="contact" style="padding-top:20px">
+<section id="contact" style="padding-top:12px">
   <div class="wrap">
     <div class="contact">
-      <div>
-        <div class="eyebrow" style="color:var(--accent)">Contact</div>
-        <h2>一起做讓人有感覺的遊戲。</h2>
-        <p>正在尋找遊戲企劃職位。歡迎直接試玩作品，或來信聊聊。</p>
-      </div>
+      <div class="en">Contact</div>
+      <h2>一起做讓人有感覺的遊戲。</h2>
+      <p>正在尋找遊戲企劃職位。歡迎直接試玩作品，或來信聊聊。</p>
       <div class="links">
         <a href="mailto:your.email@example.com">Email <span>your.email@example.com</span></a>
         <a href="https://weeaboo69.itch.io/" target="_blank" rel="noopener">itch.io <span>weeaboo69 ↗</span></a>
@@ -662,6 +757,14 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
 </section>
 
 <footer>© 2026 徐啟赫・遊戲中使用之外部音樂與素材版權屬原作者，詳見各 itch.io 頁面。</footer>
+</main>
+
+<div class="rail">
+  <button class="orb" id="theme" aria-label="切換深淺色">◐</button>
+  <a class="orb" href="#top" aria-label="回到頂端">↑</a>
+</div>
+
+</div>
 
 <div class="lb" id="lb" role="dialog" aria-label="圖片放大"><img alt=""></div>
 
@@ -674,6 +777,27 @@ footer{padding:28px 0 48px;color:var(--ink-3);font-size:13px;text-align:center}
     var nxt=cur==='dark'?'light':'dark'; root.setAttribute('data-theme',nxt);
     try{localStorage.setItem('theme',nxt);}catch(e){}
   });
+  // carousel
+  var key=document.getElementById('key'), imgs=key.querySelectorAll('.slides img'), cap=key.querySelector('figcaption'),
+      dotsBox=key.querySelector('.dots'), cur=0, timer=null,
+      still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dots=[].map.call(imgs,function(im,i){
+    var d=document.createElement('button'); d.type='button'; d.setAttribute('aria-label','第 '+(i+1)+' 張');
+    d.addEventListener('click',function(){go(i);restart();}); dotsBox.appendChild(d); return d;
+  });
+  function go(i){
+    cur=(i+imgs.length)%imgs.length;
+    imgs.forEach(function(im,j){im.classList.toggle('on',j===cur);});
+    dots.forEach(function(d,j){d.classList.toggle('on',j===cur);d.setAttribute('aria-selected',j===cur);});
+    cap.textContent=imgs[cur].getAttribute('data-cap');
+  }
+  function restart(){ clearInterval(timer); if(!still) timer=setInterval(function(){go(cur+1);},4500); }
+  key.querySelector('.prev').addEventListener('click',function(){go(cur-1);restart();});
+  key.querySelector('.next').addEventListener('click',function(){go(cur+1);restart();});
+  key.addEventListener('mouseenter',function(){clearInterval(timer);});
+  key.addEventListener('mouseleave',restart);
+  go(0); restart();
+
   var lb=document.getElementById('lb'), li=lb.querySelector('img');
   document.querySelectorAll('img.zoom, .gallery img, .mini .im img').forEach(function(im){
     im.addEventListener('click',function(){li.src=im.src;li.alt=im.alt;lb.classList.add('on');});
